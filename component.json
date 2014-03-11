@@ -1,0 +1,12 @@
+{
+    "name": "columns",
+    "version": "0.0.1",
+    "main": "src/columns.js",
+    "author": "Adam Widmanski <adamwidmanski@gmail.com>",
+    "description": "Lightweight jQuery / Zepto plugin for scrolling multiple columns",
+    "keywords": ["scrolling","columns"],
+    "license": "MIT",
+    "scripts": [
+        "src/columns.js"
+    ]
+}
