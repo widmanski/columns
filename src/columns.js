@@ -1,7 +1,5 @@
 (function ($) {
 
-
-
     if ($.zepto && !$.fn.removeData) {
         console.log('Error: Zepto is loaded without the data module.');
     }
@@ -68,15 +66,15 @@
             options = options || {};
 
             var self = this,
-             
+
                 settings = {
-                height: self.height(),
-                top: self.offset().top,
-                win: $window.height(),
-                cols: 4,
-                columnHeights: [],
-                columnTemplate: '<div class="column">{{ content }}</div>'
-            },
+                    height: self.height(),
+                    top: self.offset().top,
+                    win: $window.height(),
+                    cols: 4,
+                    columnHeights: [],
+                    columnTemplate: '<div class="column">{{ content }}</div>'
+                },
                 cels = self.children(),
                 celsCount = cels.length,
                 i = 0,
