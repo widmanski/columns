@@ -9,3 +9,11 @@
 
 ## online demo
 http://dev.widmanski.com/columns/
+
+
+## usage example
+``` js
+$("#wrapper").columns({
+    cols: 5
+});
+```

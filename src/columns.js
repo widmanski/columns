@@ -127,11 +127,12 @@
                 maxCol = 0;
 
             for (i = 0; i < settings.cols; i++) {
+                settings.columns.eq(i).css({
+                    left: i * 100 / settings.cols + "%",
+                    width: 100 / settings.cols + "%"
+                });
                 settings.columnHeights[i] = settings.columns.eq(i).height();
                 maxCol = Math.max(settings.columnHeights[i], maxCol);
-                settings.columns.eq(i).css({
-                    left: i * 100 / settings.cols + "%"
-                });
             }
 
             self.height(maxCol);
