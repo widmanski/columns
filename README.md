@@ -5,5 +5,7 @@
 ## More info coming soon // see demo
 
 ## grunt test  
-And 127.0.0.1:8282 in your browser
-For a demo
+127.0.0.1:8282 in your browser for a demo
+
+## online demo
+http://dev.widmanski.com/columns/
