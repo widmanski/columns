@@ -16,7 +16,9 @@
 <body>
 <!--[if lt IE 8]><p class="chromeframe">Your browser is <em>ancient!</em> <a href="http://browsehappy.com/">Upgrade to a different browser</a>![endif]-->
 
-<div class="wrapper is-columns" id="wrapper">
+<div style="width: 400px; height: 400px;"></div>
+
+<div class="wrapper is-columns" id="wrapper" style="width: 960px; margin: 0 auto">
 
   <div class="cell">
     <img src="http://placekitten.com/g/200/300" width="200" height="300">
@@ -96,7 +98,7 @@
   
         $("#wrapper").imagesLoaded(function() {
             $("#wrapper").columns({
-                cols: 5
+                cols: 3
             })
             .css("visibility","visible");
         });

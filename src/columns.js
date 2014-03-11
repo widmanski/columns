@@ -17,7 +17,7 @@
             methods = {
                 destroy: function () {
 
-                    // exapnd this method to return the html to the original state
+                    // exapand this method to return the html to the original state
 
                     $(this).removeData("settings");
                     $window.off(namespace);
@@ -68,12 +68,15 @@
             var self = this,
 
                 settings = {
-                    height: self.height(),
-                    top: self.offset().top,
+                    height: self.height(), // container height
+                    width: self.width(), // container width
+                    top: self.offset().top, // container offset top
                     win: $window.height(),
-                    cols: 4,
-                    columnHeights: [],
-                    columnTemplate: '<div class="column">{{ content }}</div>'
+                    cols: 4, // number of columns
+                    columnHeights: [],  // cache column heigths
+                    columnTemplate: '<div class="column">{{ content }}</div>',
+
+                    autoWidth: true // automatically assign the column width
                 },
                 cels = self.children(),
                 celsCount = cels.length,
@@ -124,19 +127,23 @@
             var self = $(e.data[0]),
                 settings = self.data("settings"),
                 i = 0,
-                maxCol = 0;
+                maxCol = 0,
+                newCSS = {
+                    left: "50%"
+                };
+
+            if ( settings.autoWidth ) newCSS.width = settings.width / settings.cols + "px";
 
             for (i = 0; i < settings.cols; i++) {
-                settings.columns.eq(i).css({
-                    left: i * 100 / settings.cols + "%",
-                    width: 100 / settings.cols + "%"
-                });
+                newCSS.marginLeft = Math.round(settings.width * 1 * ( (-i - 1) / settings.cols + 0.5)) + "px";
+                settings.columns.eq(i).css(newCSS);
                 settings.columnHeights[i] = settings.columns.eq(i).height();
                 maxCol = Math.max(settings.columnHeights[i], maxCol);
             }
 
             self.height(maxCol);
 
+            settings.width = self.width();
             settings.height = self.height();
             settings.top = self.offset().top;
             settings.win = $window.height();
@@ -156,7 +163,7 @@
                 i = 0;
 
             for (i = 0; i < settings.cols; i++) {
-                if (scrollTop + settings.win > settings.columnHeights[i]) {
+                if (scrollTop + settings.win - settings.top > settings.columnHeights[i]) {
                     settings.columns.eq(i).addClass("is-fixed");
                 } else {
                     settings.columns.eq(i).removeClass("is-fixed");
