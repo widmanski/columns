@@ -162,6 +162,16 @@
                 scrollTop = $window.scrollTop(),
                 i = 0;
 
+            // if the user scrolled past
+            if ( scrollTop + settings.win > settings.top + settings.height ) {
+                settings.columns.removeClass("is-fixed");
+                self.addClass("is-scrolled-past");
+                return;
+            }
+            else {
+                self.removeClass("is-scrolled-past");
+            }
+
             for (i = 0; i < settings.cols; i++) {
                 if (scrollTop + settings.win - settings.top > settings.columnHeights[i]) {
                     settings.columns.eq(i).addClass("is-fixed");

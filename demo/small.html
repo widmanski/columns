@@ -10,6 +10,22 @@
   <title>prototype</title>
   <meta name="description" content="{{ description }}">
   <link rel="stylesheet" href="/css/style.css">
+  <style>
+  .is-scrolled-past .column {
+    position: absolute;
+    bottom: 0;
+    top: auto;
+  }
+  .column {
+    position: absolute;
+    top: 0;
+  }
+  .column.is-fixed {
+    top: auto;
+    position: fixed;
+    bottom: 0;
+  }
+  </style>
   <script src="/js/head.js"></script>
   <meta name="viewport" content="width=device-width, minimum-scale=1, maximum-scale=1">
 </head>
@@ -85,10 +101,11 @@
     <img src="http://placekitten.com/g/200/250" width="200" height="250">
   </div>
   
-
-
-
 </div>
+
+
+<div style="width: 400px; height: 400px;"></div>
+
 
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 <script src="/js/columns.min.js"></script>
