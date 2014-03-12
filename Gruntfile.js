@@ -15,8 +15,17 @@ module.exports = function( grunt ) {
             },
             src: {
                 src: 'src/*.js'
+            },
+            options: {
+              curly: true,
+              eqeqeq: true,
+              eqnull: true,
+              browser: true,
+              globals: {
+                jQuery: true
+              },
+              force: true
             }
-
         },
 
 

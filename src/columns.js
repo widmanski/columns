@@ -1,5 +1,7 @@
 (function ($) {
 
+    "use strict";
+
     if ($.zepto && !$.fn.removeData) {
         console.log('Error: Zepto is loaded without the data module.');
     }
@@ -14,7 +16,7 @@
 
             namespace = '.columns',
 
-            methods = {
+            publicMethods = {
                 destroy: function () {
 
                     // exapand this method to return the html to the original state
@@ -37,11 +39,12 @@
             };
 
         if (typeof (options) === "string") {
-            if (options in methods) {
-                methods[options]();
+            if (options in publicMethods) {
+                publicMethods[options].call(this, (arguments.length > 1) ? arguments.slice(1) : arguments);
                 return false;
             }
         }
+
 
         function call(functions, scope, args) {
 
@@ -68,16 +71,18 @@
             var self = this,
 
                 settings = {
-                    height: self.height(), // container height
-                    width: self.width(), // container width
-                    top: self.offset().top, // container offset top
-                    win: $window.height(),
-                    cols: 4, // number of columns
-                    columnHeights: [],  // cache column heigths
-                    columnTemplate: '<div class="column">{{ content }}</div>',
 
-                    autoWidth: true // automatically assign the column width
+                    height:         self.height(), // container height
+                    width:          self.width(), // container width
+                    top:            self.offset().top, // container offset top
+                    win:            $window.height(),
+                    cols:           4, // number of columns
+                    columnHeights:  [],  // cache column heigths
+                    columnTemplate: '<div class="column">{{ content }}</div>',
+                    autoWidth:      true // automatically assign the column width
+
                 },
+
                 cels = self.children(),
                 celsCount = cels.length,
                 i = 0,
@@ -129,10 +134,13 @@
                 i = 0,
                 maxCol = 0,
                 newCSS = {
+                    // todo: base this on the container middle and element offset
                     left: "50%"
                 };
 
-            if ( settings.autoWidth ) newCSS.width = settings.width / settings.cols + "px";
+            if ( settings.autoWidth ) {
+                newCSS.width = settings.width / settings.cols + "px";
+            }
 
             for (i = 0; i < settings.cols; i++) {
                 newCSS.marginLeft = Math.round(settings.width * 1 * ( (-i - 1) / settings.cols + 0.5)) + "px";
