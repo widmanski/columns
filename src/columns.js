@@ -72,15 +72,16 @@
 
                 settings = {
 
-                    height:         self.height(), // container height
-                    width:          self.width(), // container width
-                    top:            self.offset().top, // container offset top
+                    height:         self.height(),          // container height
+                    width:          self.width(),           // container width
+                    top:            self.offset().top,      // container offset top
+                    left:           self.offset().left,     // container offset left
                     win:            $window.height(),
-                    cols:           4, // number of columns
-                    columnHeights:  [],  // cache column heigths
+                    cols:           4,                      // number of columns
+                    columnHeights:  [],                     // cache column heigths
                     columnTemplate: '<div class="column">{{ content }}</div>',
-                    autoWidth:      true // automatically assign the column width
-
+                    autoWidth:      true,                   // automatically assign the column width
+                    createColumns:  true                    // automatically create columns?
                 },
 
                 cels = self.children(),
@@ -97,22 +98,30 @@
 
             $.extend(settings, options);
 
-            // 1. Group into columns
 
-            for (i = 0; i < celsCount; i++) {
-                columns[currentCol] = (columns[currentCol] || "") + cels[i].outerHTML;
-                currentCol++;
-                if (currentCol === settings.cols) currentCol = 0;
+            if ( settings.createColumns ) {
+                // 1. Group into columns
+
+                for (i = 0; i < celsCount; i++) {
+                    columns[currentCol] = (columns[currentCol] || "") + cels[i].outerHTML;
+                    currentCol++;
+                    if (currentCol === settings.cols) currentCol = 0;
+                }
+
+                for (i = 0; i < settings.cols; i++) {
+                    newHTML += settings.columnTemplate.replace("{{ content }}", columns[i]);
+                }
+
+                // Replace the html
+                self.html(newHTML);
+
+                settings.columns = self.find(".column");
+
             }
 
-            for (i = 0; i < settings.cols; i++) {
-                newHTML += settings.columnTemplate.replace("{{ content }}", columns[i]);
+            else {
+                settings.columns = self.children();
             }
-
-            // Replace the html
-            self.html(newHTML);
-
-            settings.columns = $(this).find(".column");
 
             self.data("settings", settings);
 
@@ -143,9 +152,11 @@
             }
 
             for (i = 0; i < settings.cols; i++) {
-                newCSS.marginLeft = Math.round(settings.width * 1 * ( (-i - 1) / settings.cols + 0.5)) + "px";
-                settings.columns.eq(i).css(newCSS);
-                settings.columnHeights[i] = settings.columns.eq(i).height();
+
+                newCSS.marginLeft = Math.round(settings.width * 1 * ( (i - settings.cols) / settings.cols + 0.5)) + "px";
+
+                settings.columns.eq(i).removeClass("is-fixed").removeClass("is-short").css(newCSS);
+                settings.columnHeights[i] = settings.columns.eq(i).height();                
                 maxCol = Math.max(settings.columnHeights[i], maxCol);
             }
 
@@ -159,16 +170,21 @@
             console.log(settings);
 
             self.data("settings", settings);
+
+            onScroll.call(self, {data: [self]});
         }
 
         function onScroll(e) {
 
-            console.log("on Scroll called");
+
 
             var self = $(e.data[0]),
                 settings = self.data("settings"),
                 scrollTop = $window.scrollTop(),
                 i = 0;
+
+
+            console.log("on Scroll called");
 
             // if the user scrolled past
             if ( scrollTop + settings.win > settings.top + settings.height ) {
@@ -180,7 +196,21 @@
                 self.removeClass("is-scrolled-past");
             }
 
+
+
+
             for (i = 0; i < settings.cols; i++) {
+
+                if ( settings.columnHeights[i] < settings.win && scrollTop > settings.top ) {
+                    settings.columns.eq(i).removeClass("is-fixed").addClass("is-short");
+                    continue;
+                }
+                else {
+                    settings.columns.eq(i).removeClass("is-short");
+                }
+
+                if ( scrollTop < settings.top ) continue;
+
                 if (scrollTop + settings.win - settings.top > settings.columnHeights[i]) {
                     settings.columns.eq(i).addClass("is-fixed");
                 } else {
