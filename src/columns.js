@@ -152,6 +152,13 @@
                     left: 0
                 };
 
+                
+                settings.width = self.width();
+                settings.top = self.offset().top;
+                settings.left = self.offset().left;
+                settings.win = $window.height();
+                settings.winW = $window.width();
+
             if ( settings.autoWidth ) {
                 newCSS.width = settings.width / settings.cols + "px";
             }
@@ -173,12 +180,7 @@
             self.height(maxCol);
 
             // move those up in the function
-            settings.width = self.width();
             settings.height = self.height();
-            settings.top = self.offset().top;
-            settings.left = self.offset().left;
-            settings.win = $window.height();
-            settings.winW = $window.width();
 
             console.log(settings);
 

@@ -10,6 +10,7 @@
 - locking short columns to the top of the current container
 - scrolling columns at different speeds to ensure they end in the same spot
 - locking columns to the bottom of the container when you reach their end
+- automatically wraps pieces of content into columns [optional]
 
 ## testing & building
 - grunt test  
@@ -94,6 +95,7 @@ $("#wrapper").columns({
 - Add a css transform matrix option to make scrolling speed proportional to column height [in progress]
 - Enable choosing different settings for each column [is it necessary?]
 - Add an option to set top offset of the fixed elements
+- Add a "lock all elements" option in case you want to do a css 3d transform on the container [e.g. when using offscreen navigation]
 
 
 ## other plugins
