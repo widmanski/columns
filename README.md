@@ -10,10 +10,11 @@
 - grunt test  
 - 127.0.0.1:8282 in your browser for preview
 
-## online demos
+## demos
 - http://dev.widmanski.com/columns/
 - http://dev.widmanski.com/columns/small.html
 - demo/page.html - variable column widths; menu column;
+- demo/multiple.html - blog-like layout with multiple instances
 
 
 ## proportional scrolling [new]

@@ -225,15 +225,28 @@
                 }
                 // in this mode no need for locking columns
                 return; 
-            }
+            }   
 
+
+            // to do: refactor those syle attributes found below into classes [maybe?] to avoid messing up other properties
+
+            // if the user didn't reach it yet
+
+            if ( scrollTop < settings.top ) {
+                settings.columns.removeClass("is-fixed").removeClass("is-short").css({"left": 0, "minHeight": 0});
+                self.removeClass("is-scrolled-past");
+                return;
+            }
 
             // if the user scrolled past
 
             // todo: optimize this section!
 
             if ( scrollTop + settings.win > settings.top + settings.height ) {
-                settings.columns.not(".is-short").removeClass("is-fixed").css({"left": 0});
+                settings.columns.removeClass("is-fixed").css({"left": 0});
+                settings.columns.filter(".is-short").css({
+                    minHeight: settings.win
+                });
                 self.addClass("is-scrolled-past");
                 return;
             }
