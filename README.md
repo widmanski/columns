@@ -22,7 +22,6 @@ By setting proportionalScroll to true you activate an alternative mode. The colu
 - demo/proportional.html
 - demo/small-proportional.html
 
-
 ## usage example
 ``` js
 $("#wrapper").columns({
@@ -30,11 +29,21 @@ $("#wrapper").columns({
 });
 ```
 
+## all options & default values
+``` js
+{
+    cols:               4,                      // number of columns
+    columnTemplate:     '<div class="column">{{ content }}</div>',
+    autoWidth:          true,                   // automatically assign the column width
+    createColumns:      true,                   // automatically create columns?
+    proportionalScroll: false                   // enable proportional scroll mode
+}
+```
 
 ## todos
 
 - Add proper destroy method
-- Enable various column widths
 - Make various container layouts work
 - Add tests
-- Add a css transform matrix option to make scrolling speed proportional to column height
+- Add a css transform matrix option to make scrolling speed proportional to column height [in progress]
+- Enable choosing different settings for each column [is it necessary?]
