@@ -42,6 +42,45 @@ $("#wrapper").columns({
 }
 ```
 
+``` css
+  /* 
+    .wrapper holds the columns 
+    call $.fn.columns() with it; feel free to rename 
+    
+    feel free to rename column --> update option columnTemplate accordingly [only in case of automatically creating columns]
+    
+  */
+  .wrapper {
+    position: relative;
+  }
+
+  .is-scrolled-past .column {
+    position: absolute;
+    bottom: 0;
+    top: auto;
+  }
+  .column {
+    position: absolute;
+    top: 0;
+  }
+  .column.is-fixed {
+    top: auto;
+    position: fixed;
+    bottom: 0;
+  }
+
+  .column.is-short {
+    top: 0;
+    position: fixed;
+  }
+
+  .is-scrolled-past .column.is-short {
+    bottom: 0;
+    position: absolute;
+    top: auto;
+  }
+```
+
 ## todos
 
 - Add proper destroy method
