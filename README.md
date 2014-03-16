@@ -2,7 +2,7 @@
 
 > Locking multiple columns while scrolling to always fill the screens
 
-<p align="center"><img width="600" height="400" src="http://dev.widmanski.com/columns/cols-demo.gif" alt="Demo"></p>
+<p align="center"><img style="max-width: 100%" height="400" src="http://dev.widmanski.com/columns/cols-demo.gif?v2" alt="Demo"></p>
 
 > More info coming soon // This is a really early version // Please see demos for more info
 
