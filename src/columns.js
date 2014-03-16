@@ -81,7 +81,9 @@
                     columnHeights:  [],                     // cache column heigths
                     columnTemplate: '<div class="column">{{ content }}</div>',
                     autoWidth:      true,                   // automatically assign the column width
-                    createColumns:  true                    // automatically create columns?
+                    createColumns:  true,                   // automatically create columns?
+                    proportionalScroll: false                // makes the columns scroll proportionally using css transforms
+
                 },
 
                 cels = self.children(),
@@ -184,7 +186,37 @@
                 i = 0;
 
 
-            console.log("on Scroll called");
+            if ( settings.proportionalScroll ) {
+
+                // consider: setting this individually for each column
+
+                var columnRatio = 1,
+                colShift = 0,
+                colTransform = "";
+                // This uses the prortional scrolling mode -- the shorter columns will be moved up to offset for their smaller height
+                for (i = 0; i < settings.cols; i++) {
+                    columnRatio = settings.columnHeights[i] / settings.height;
+
+                    if ( columnRatio === 1 ) {
+                        continue;
+                    }
+
+                    colShift = (1-columnRatio) * settings.height * Math.min(1,Math.max(0,(scrollTop - settings.top) / (settings.height - settings.win)));
+                    colTransform = "translate3d(0px," + colShift + "px, 0px)";
+
+                    // toDo: use native JS for setting the atributes
+                    settings.columns.eq(i).css({
+                        // marginTop: colShift 
+                        "transform":            colTransform,
+                        "-webkit-transform":    colTransform,
+                        "-moz-transform":       colTransform,
+                        "-ms-transform":       colTransform
+                    });
+                }
+                // in this mode no need for locking columns
+                return; 
+            }
+
 
             // if the user scrolled past
             if ( scrollTop + settings.win > settings.top + settings.height ) {
