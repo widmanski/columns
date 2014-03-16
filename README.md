@@ -47,3 +47,4 @@ $("#wrapper").columns({
 - Add tests
 - Add a css transform matrix option to make scrolling speed proportional to column height [in progress]
 - Enable choosing different settings for each column [is it necessary?]
+- Add an option to set top offset of the fixed elements

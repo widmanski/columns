@@ -19,6 +19,10 @@
   .column {
     position: absolute;
     top: 0;
+    width: 360px;
+  }
+  .column:first-child {
+    width: 240px;
   }
   .column.is-fixed {
     top: auto;
@@ -92,7 +96,8 @@
         $("#wrapper").imagesLoaded(function() {
             $("#wrapper").columns({
                 cols: 3,
-                createColumns: false
+                createColumns: false,
+                autoWidth: false
             })
             .css("visibility","visible");
         });

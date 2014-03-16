@@ -77,6 +77,7 @@
                     top:            self.offset().top,      // container offset top
                     left:           self.offset().left,     // container offset left
                     win:            $window.height(),
+                    winW:           $window.width(),
                     cols:           4,                      // number of columns
                     columnHeights:  [],                     // cache column heigths
                     columnTemplate: '<div class="column">{{ content }}</div>',
@@ -144,9 +145,11 @@
                 settings = self.data("settings"),
                 i = 0,
                 maxCol = 0,
+                colOffset = 0,
+                colWidth = 0,
                 newCSS = {
                     // todo: base this on the container middle and element offset
-                    left: "50%"
+                    left: 0
                 };
 
             if ( settings.autoWidth ) {
@@ -155,11 +158,16 @@
 
             for (i = 0; i < settings.cols; i++) {
 
-                newCSS.marginLeft = Math.round(settings.width * 1 * ( (i - settings.cols) / settings.cols + 0.5)) + "px";
+                settings.columns.eq(i).removeAttr("style").removeClass("is-fixed").removeClass("is-short");
 
-                settings.columns.eq(i).removeClass("is-fixed").removeClass("is-short").css(newCSS);
+                newCSS.marginLeft = colWidth;
+                // newCSS.marginLeft = Math.round(settings.width * 1 * ( (i - settings.cols) / settings.cols + 0.5)) + "px";
+
+                settings.columns.eq(i).css(newCSS);
                 settings.columnHeights[i] = settings.columns.eq(i).height();                
                 maxCol = Math.max(settings.columnHeights[i], maxCol);
+
+                colWidth += settings.columns.eq(i).width();
             }
 
             self.height(maxCol);
@@ -167,7 +175,9 @@
             settings.width = self.width();
             settings.height = self.height();
             settings.top = self.offset().top;
+            settings.left = self.offset().left;
             settings.win = $window.height();
+            settings.winW = $window.width();
 
             console.log(settings);
 
@@ -219,8 +229,11 @@
 
 
             // if the user scrolled past
+
+            // todo: optimize this section!
+
             if ( scrollTop + settings.win > settings.top + settings.height ) {
-                settings.columns.removeClass("is-fixed");
+                settings.columns.not(".is-short").removeClass("is-fixed").css({"left": 0});
                 self.addClass("is-scrolled-past");
                 return;
             }
@@ -234,19 +247,19 @@
             for (i = 0; i < settings.cols; i++) {
 
                 if ( settings.columnHeights[i] < settings.win && scrollTop > settings.top ) {
-                    settings.columns.eq(i).removeClass("is-fixed").addClass("is-short");
+                    settings.columns.eq(i).removeClass("is-fixed").addClass("is-short").css({"left": settings.left});
                     continue;
                 }
                 else {
-                    settings.columns.eq(i).removeClass("is-short");
+                    settings.columns.eq(i).removeClass("is-short").css({"left": 0});
                 }
 
                 if ( scrollTop < settings.top ) continue;
 
                 if (scrollTop + settings.win - settings.top > settings.columnHeights[i]) {
-                    settings.columns.eq(i).addClass("is-fixed");
+                    settings.columns.eq(i).addClass("is-fixed").css({"left": settings.left});
                 } else {
-                    settings.columns.eq(i).removeClass("is-fixed");
+                    settings.columns.eq(i).removeClass("is-fixed").css({"left": 0});
                 }
             }
 
