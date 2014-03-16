@@ -153,11 +153,11 @@
                 };
 
                 
-                settings.width = self.width();
-                settings.top = self.offset().top;
-                settings.left = self.offset().left;
-                settings.win = $window.height();
-                settings.winW = $window.width();
+            settings.width = self.width();
+            settings.top = self.offset().top;
+            settings.left = self.offset().left;
+            settings.win = $window.height();
+            settings.winW = $window.width();
 
             if ( settings.autoWidth ) {
                 newCSS.width = settings.width / settings.cols + "px";
