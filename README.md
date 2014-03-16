@@ -6,6 +6,11 @@
 
 > More info coming soon // This is a really early version // Please see demos for more info
 
+## features
+- locking short columns to the top of the current container
+- scrolling columns at different speeds to ensure they end in the same spot
+- locking columns to the bottom of the container when you reach their end
+
 ## testing & building
 - grunt test  
 - 127.0.0.1:8282 in your browser for preview
@@ -84,8 +89,13 @@ $("#wrapper").columns({
 ## todos
 
 - Add proper destroy method
-- Make various container layouts work
+- Add lock-to-top option [currently it locks to bottom]
 - Add tests
 - Add a css transform matrix option to make scrolling speed proportional to column height [in progress]
 - Enable choosing different settings for each column [is it necessary?]
 - Add an option to set top offset of the fixed elements
+
+
+## other plugins
+If you're interested in similar plugins you may want to check out:
+- https://github.com/zamiang/jquery.poplockit
