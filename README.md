@@ -2,7 +2,7 @@
 
 > Locking multiple columns while scrolling to always fill the screens
 
-<p align="center"><img style="max-width: 100%" height="400" src="http://dev.widmanski.com/columns/cols-demo.gif?v2" alt="Demo"></p>
+<p align="center"><img style="max-width: 100%" height="400" src="http://dev.widmanski.com/columns/cols-demo.gif?v3" alt="Demo"></p>
 
 > More info coming soon // This is a really early version // Please see demos for more info
 
@@ -12,17 +12,17 @@
 
 ## demos
 - http://dev.widmanski.com/columns/
+- http://dev.widmanski.com/columns/multiple.html - blog-like layout with multiple instances
 - http://dev.widmanski.com/columns/small.html
-- demo/page.html - variable column widths; menu column;
-- demo/multiple.html - blog-like layout with multiple instances
 
 
 ## proportional scrolling [new]
 
 By setting proportionalScroll to true you activate an alternative mode. The columns are no longer locked - they scroll proportionally to always end at container bottom.
 
-- demo/proportional.html
-- demo/small-proportional.html
+- http://dev.widmanski.com/columns/proportional.html
+- http://dev.widmanski.com/columns/small-proportional.html
+- http://dev.widmanski.com/columns/proportional-crazy.html - 11 columns.
 
 ## usage example
 ``` js

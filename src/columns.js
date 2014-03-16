@@ -19,7 +19,7 @@
             publicMethods = {
                 destroy: function () {
 
-                    // exapand this method to return the html to the original state
+                    // exapand this method to return the html to the original state --> unwrap the columns content, remove inline styles
 
                     $(this).removeData("settings");
                     $window.off(namespace);
@@ -172,6 +172,7 @@
 
             self.height(maxCol);
 
+            // move those up in the function
             settings.width = self.width();
             settings.height = self.height();
             settings.top = self.offset().top;
