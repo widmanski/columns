@@ -13,6 +13,7 @@
 ## online demos
 - http://dev.widmanski.com/columns/
 - http://dev.widmanski.com/columns/small.html
+- demo/page.html - variable column widths; menu column;
 
 
 ## proportional scrolling [new]
