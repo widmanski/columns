@@ -2,14 +2,23 @@
 
 > Locking multiple columns while scrolling to always fill the screens
 
-## More info coming soon // This is a really early version // Please see demos for more info
+> More info coming soon // This is a really early version // Please see demos for more info
 
-## grunt test  
-127.0.0.1:8282 in your browser for a demo
+## testing & building
+- grunt test  
+- 127.0.0.1:8282 in your browser for preview
 
 ## online demos
-http://dev.widmanski.com/columns/
-http://dev.widmanski.com/columns/small.html
+- http://dev.widmanski.com/columns/
+- http://dev.widmanski.com/columns/small.html
+
+
+## proportional scrolling [new]
+
+By setting proportionalScroll to true you activate an alternative mode. The columns are no longer locked - they scroll proportionally to always end at container bottom.
+
+- demo/proportional.html
+- demo/small-proportional.html
 
 
 ## usage example
