@@ -83,7 +83,8 @@
                     columnTemplate: '<div class="column">{{ content }}</div>',
                     autoWidth:      true,                   // automatically assign the column width
                     createColumns:  true,                   // automatically create columns?
-                    proportionalScroll: false                // makes the columns scroll proportionally using css transforms
+                    proportionalScroll: false,              // makes the columns scroll proportionally using css transforms
+                    reverse:        false                   // makes the shorter columns stick to the top, rather than to the bottom
 
                 },
 
@@ -232,24 +233,37 @@
 
 
             // to do: refactor those syle attributes found below into classes [maybe?] to avoid messing up other properties
+            // to do: create an array of all those possible classes
 
             // if the user didn't reach it yet
 
             if ( scrollTop < settings.top ) {
-                settings.columns.removeClass("is-fixed").removeClass("is-short").css({"left": 0, "minHeight": 0});
+
+                settings.columns
+                .removeClass("is-fixed")
+                .removeClass("is-top-fixed")
+                .removeClass("is-short")
+                .css({"left": 0, "minHeight": 0, "top": 0});
+
                 self.removeClass("is-scrolled-past");
                 return;
             }
 
-            // if the user scrolled past
 
+            // if the user scrolled past
             // todo: optimize this section!
 
             if ( scrollTop + settings.win > settings.top + settings.height ) {
-                settings.columns.removeClass("is-fixed").css({"left": 0});
+
+                settings.columns
+                .removeClass("is-fixed")
+                .removeClass("is-top-fixed")
+                .css({"left": 0, "top": "auto"});
+
                 settings.columns.filter(".is-short").css({
                     minHeight: settings.win
                 });
+
                 self.addClass("is-scrolled-past");
                 return;
             }
@@ -258,7 +272,52 @@
             }
 
 
+            // top (reverse) lock
+ 
+            if ( settings.reverse ) {
 
+                for (i = 0; i < settings.cols; i++) {
+
+                    if ( settings.columnHeights[i] < settings.win && scrollTop > settings.top ) {
+                        settings.columns.eq(i).removeClass("is-bottom-fixed").addClass("is-short").css({"left": settings.left});
+                        continue;
+                    }
+                    else {
+                        settings.columns.eq(i).removeClass("is-short")
+                        .css({
+                            "left": 0, 
+                            "top": 0
+                        });
+                    }
+
+                    if ( scrollTop < settings.top ) continue;
+
+                    if ( scrollTop > settings.top + settings.height - settings.columnHeights[i] ) {
+
+                        settings.columns.eq(i).removeClass("is-top-fixed")
+                        .css({
+                            "left": 0,
+                            "top":  settings.height - settings.columnHeights[i]
+                        });
+
+                    } else if (settings.columnHeights[i] < settings.height ) {
+
+                        settings.columns.eq(i).addClass("is-top-fixed")
+                        .css({
+                            "left": settings.left
+                        });
+
+                    }
+
+                }
+
+
+                return;
+            }
+
+
+
+            // default mode
 
             for (i = 0; i < settings.cols; i++) {
 
