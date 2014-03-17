@@ -52,6 +52,10 @@ module.exports = function( grunt ) {
             files: {
               'dist/columns.min.js': [
                 'src/*.js'
+                ],
+
+              'demo/js/columns.min.js': [
+                'src/*.js'
                 ]
             }
           }
