@@ -14,15 +14,14 @@
             $body = $('body'),
             $window = $(window),
 
-            namespace = '.columns',
 
             publicMethods = {
                 destroy: function () {
 
                     // exapand this method to return the html to the original state --> unwrap the columns content, remove inline styles
-
+                    var settings = this.data("settings");
+                    $window.off(settings.namespace);
                     $(this).removeData("settings");
-                    $window.off(namespace);
                     console.log("destroy called");
 
                 },
@@ -72,6 +71,7 @@
 
                 settings = {
 
+                    namespace:      "columns",
                     height:         self.height(),          // container height
                     width:          self.width(),           // container width
                     top:            self.offset().top,      // container offset top
@@ -129,10 +129,13 @@
 
             self.data("settings", settings);
 
-            $window.on("scroll" + namespace, this, onScroll)
-                .on("resize" + namespace, this, onResize)
+            $window.on("scroll." + settings.namespace, this, onScroll)
+                .on("resize." + settings.namespace, this, onResize)
                 .trigger("scroll")
                 .trigger("resize");
+
+            onResize({data: [this]});
+            onScroll({data: [this]});
 
             console.log(settings);
 
@@ -141,6 +144,7 @@
         }
 
         function onResize(e) {
+
 
             var self = $(e.data[0]),
                 settings = self.data("settings"),
@@ -153,6 +157,7 @@
                     left: 0
                 };
 
+            console.log("resize called for " + settings.namespace);
                 
             settings.width = self.width();
             settings.top = self.offset().top;
@@ -331,8 +336,9 @@
 
                 if ( scrollTop < settings.top ) continue;
 
-                if (scrollTop + settings.win - settings.top > settings.columnHeights[i]) {
-                    settings.columns.eq(i).addClass("is-fixed").css({"left": settings.left});
+                // if (scrollTop + settings.win - settings.top > settings.columnHeights[i]) {
+                if ( scrollTop > settings.top + settings.columnHeights[i] - settings.win ) {
+                    settings.columns.eq(i).addClass("is-fixed").css({"top": "auto", "left": settings.left});
                 } else {
                     settings.columns.eq(i).removeClass("is-fixed").css({"left": 0});
                 }
