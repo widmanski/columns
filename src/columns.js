@@ -84,8 +84,8 @@
                     autoWidth:      true,                   // automatically assign the column width
                     createColumns:  true,                   // automatically create columns?
                     proportionalScroll: false,              // makes the columns scroll proportionally using css transforms
-                    reverse:        false                   // makes the shorter columns stick to the top, rather than to the bottom
-
+                    reverse:        false,                  // makes the shorter columns stick to the top, rather than to the bottom
+                    reversedDirection: false                // makes the even columns scroll the other way
                 },
 
                 cels = self.children(),
@@ -223,7 +223,7 @@
                     colShift = (1-columnRatio) * settings.height * Math.min(1,Math.max(0,(scrollTop - settings.top) / (settings.height - settings.win)));
                     colTransform = "translate3d(0px," + colShift + "px, 0px)";
 
-                    // toDo: use native JS for setting the atributes
+                    // toDo: use native JS ? for setting the atributes
                     settings.columns.eq(i).css({
                         // marginTop: colShift 
                         "transform":            colTransform,
@@ -263,7 +263,14 @@
                 settings.columns
                 .removeClass("is-fixed")
                 .removeClass("is-top-fixed")
-                .css({"left": 0, "top": "auto"});
+                .css({
+                    "left": 0
+                    //, "top": "auto",                              
+                    // "transform":            "none",
+                    // "-webkit-transform":    "none",
+                    // "-moz-transform":       "none",
+                    // "-ms-transform":        "none"
+                });
 
                 settings.columns.filter(".is-short").css({
                     minHeight: settings.win
@@ -320,6 +327,9 @@
                 return;
             }
 
+          
+
+
 
 
             // default mode
@@ -327,7 +337,14 @@
             for (i = 0; i < settings.cols; i++) {
 
                 if ( settings.columnHeights[i] < settings.win && scrollTop > settings.top ) {
-                    settings.columns.eq(i).removeClass("is-fixed").addClass("is-short").css({"left": settings.left});
+                    settings.columns.eq(i).removeClass("is-fixed").addClass("is-short")
+                    .css({
+                        "left": settings.left,                        
+                        "transform":            "none",
+                        "-webkit-transform":    "none",
+                        "-moz-transform":       "none",
+                        "-ms-transform":        "none"
+                    });
                     continue;
                 }
                 else {
@@ -335,6 +352,29 @@
                 }
 
                 if ( scrollTop < settings.top ) continue;
+
+                  // reversed direction scrolling
+                // temp: the 2nd column is reversed [do every even column?]
+
+                if ( settings.reversedDirection && i % 2 !== 0 ) {
+
+                    var colShift =  2* Math.max( scrollTop - settings.top, 0 ) + settings.win - settings.columnHeights[i] ;
+
+                    colShift = Math.min ( colShift, -settings.win + settings.height);
+
+                    colTransform = "translate3d(0px," + colShift + "px, 0px)";
+
+                    // toDo: use native JS ? for setting the atributes
+                    settings.columns.eq(i).css({
+                        // marginTop: colShift 
+                        "transform":            colTransform,
+                        "-webkit-transform":    colTransform,
+                        "-moz-transform":       colTransform,
+                        "-ms-transform":       colTransform
+                    });
+
+                    continue;
+                }
 
                 // if (scrollTop + settings.win - settings.top > settings.columnHeights[i]) {
                 if ( scrollTop > settings.top + settings.columnHeights[i] - settings.win ) {

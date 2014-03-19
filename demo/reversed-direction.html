@@ -14,12 +14,19 @@
   /* holds the columns; call $.fn.columns() with it */
   .wrapper {
     position: relative;
+
+  /* reversed example only */
+    overflow: hidden;
   }
 
   .is-scrolled-past .column {
     position: absolute;
     bottom: 0;
     top: auto;
+    transform: none;
+    -webkit-transform: none;
+    -moz-transform: none;
+    -ms-transform: none;
   }
   .column {
     position: absolute;
@@ -55,23 +62,41 @@
   <div class="cell">
     <img src="http://placehold.it/700x1200" width="700" height="1200">
   </div>
-
   <div class="cell">
-    <img src="http://placehold.it/700x1050" width="700" height="1050">
+    <img src="http://placehold.it/700x1200" width="700" height="1200">
   </div>
-
-
   <div class="cell">
-    <img src="http://placehold.it/700x800" width="700" height="800">
+    <img src="http://placehold.it/700x1200" width="700" height="1200">
   </div>
-
   <div class="cell">
-    <img src="http://placehold.it/700x950" width="700" height="950">
+    <img src="http://placehold.it/700x1200" width="700" height="1200">
+  </div>
+  <div class="cell">
+    <img src="http://placehold.it/700x1200" width="700" height="1200">
+  </div>
+  <div class="cell">
+    <img src="http://placehold.it/700x1200" width="700" height="1200">
   </div>
 
   <div class="cell">
     <img src="http://placehold.it/700x1200" width="700" height="1200">
   </div>
+  <div class="cell">
+    <img src="http://placehold.it/700x1200" width="700" height="1200">
+  </div>
+  <div class="cell">
+    <img src="http://placehold.it/700x1200" width="700" height="1200">
+  </div>
+  <div class="cell">
+    <img src="http://placehold.it/700x1200" width="700" height="1200">
+  </div>
+  <div class="cell">
+    <img src="http://placehold.it/700x1200" width="700" height="1200">
+  </div>
+  <div class="cell">
+    <img src="http://placehold.it/700x1200" width="700" height="1200">
+  </div>
+
 
 
 </div>
@@ -79,20 +104,38 @@
 
 
   <div class="cell">
-    <img src="http://placehold.it/700x1050" width="700" height="1050">
+    <img src="http://placehold.it/700x1200" width="700" height="1200">
   </div>
-
-  <div class="cell">
-    <img src="http://placehold.it/700x950" width="700" height="950">
-  </div>
-  
   <div class="cell">
     <img src="http://placehold.it/700x1200" width="700" height="1200">
   </div>
   <div class="cell">
-    <img src="http://placehold.it/700x950" width="700" height="950">
+    <img src="http://placehold.it/700x1200" width="700" height="1200">
   </div>
-
+  <div class="cell">
+    <img src="http://placehold.it/700x1200" width="700" height="1200">
+  </div>
+  <div class="cell">
+    <img src="http://placehold.it/700x1200" width="700" height="1200">
+  </div>
+  <div class="cell">
+    <img src="http://placehold.it/700x1200" width="700" height="1200">
+  </div>
+  <div class="cell">
+    <img src="http://placehold.it/700x1200" width="700" height="1200">
+  </div>
+  <div class="cell">
+    <img src="http://placehold.it/700x1200" width="700" height="1200">
+  </div>
+  <div class="cell">
+    <img src="http://placehold.it/700x1200" width="700" height="1200">
+  </div>
+  <div class="cell">
+    <img src="http://placehold.it/700x1200" width="700" height="1200">
+  </div>
+  <div class="cell">
+    <img src="http://placehold.it/700x1200" width="700" height="1200">
+  </div>
   <div class="cell">
     <img src="http://placehold.it/700x1200" width="700" height="1200">
   </div>
@@ -109,8 +152,9 @@
      $(".wrapper").imagesLoaded(function() {
             $(".wrapper").each(function() {
               $(this).columns({
-                cols: 2,            
-                namespace: $(this).attr("id")
+                cols: 3,            
+                namespace: $(this).attr("id"),
+                reversedDirection: true
             });
             })
             .css("visibility","visible");
