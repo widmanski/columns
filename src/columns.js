@@ -137,7 +137,6 @@
             onResize({data: [this]});
             onScroll({data: [this]});
 
-            console.log(settings);
 
             return self;
 
@@ -157,7 +156,6 @@
                     left: 0
                 };
 
-            console.log("resize called for " + settings.namespace);
                 
             settings.width = self.width();
             settings.top = self.offset().top;
@@ -188,7 +186,6 @@
             // move those up in the function
             settings.height = self.height();
 
-            console.log(settings);
 
             self.data("settings", settings);
 
@@ -381,7 +378,7 @@
 
                 if ( settings.reversedDirection && i % 2 !== 0 ) {
 
-                    var colShift =  2* Math.max( scrollTop - settings.top, 0 ) + settings.win - settings.columnHeights[i] ;
+                    var colShift =  2 * Math.max( scrollTop - settings.top, 0 ) + settings.win - settings.columnHeights[i] ;
 
                     colShift = Math.min ( colShift, -settings.win + settings.height);
 
