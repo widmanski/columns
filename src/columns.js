@@ -272,9 +272,30 @@
                     // "-ms-transform":        "none"
                 });
 
-                settings.columns.filter(".is-short").css({
-                    minHeight: settings.win
-                });
+           
+                for (i = 0; i < settings.cols; i++) {
+
+                    // handling for short columns
+                    if ( settings.columns.eq(i).hasClass("is-short") ) {
+
+                        // scrolled past the column bottom -- let it go
+                        if ( scrollTop + settings.columnHeights[i] > settings.top + settings.height ) {
+                            settings.columns.eq(i).css({
+                                top: "auto",
+                                bottom: 0                            
+                            });
+                        }
+                        else {
+                            settings.columns.eq(i).css({
+
+                                // minHeight: settings.win,
+                                top: scrollTop - settings.top //- ( settings.top + settings.height ) 
+                            
+                            });
+                        }
+                    }
+
+                }
 
                 self.addClass("is-scrolled-past");
                 return;
@@ -291,7 +312,7 @@
                 for (i = 0; i < settings.cols; i++) {
 
                     if ( settings.columnHeights[i] < settings.win && scrollTop > settings.top ) {
-                        settings.columns.eq(i).removeClass("is-bottom-fixed").addClass("is-short").css({"left": settings.left});
+                        settings.columns.eq(i).removeClass("is-bottom-fixed").addClass("is-short").css({"left": settings.left, "top": 0});
                         continue;
                     }
                     else {
@@ -343,7 +364,8 @@
                         "transform":            "none",
                         "-webkit-transform":    "none",
                         "-moz-transform":       "none",
-                        "-ms-transform":        "none"
+                        "-ms-transform":        "none",
+                        "top": 0
                     });
                     continue;
                 }
