@@ -205,6 +205,7 @@
                 i = 0;
 
 
+
             if ( settings.proportionalScroll ) {
 
                 // consider: setting this individually for each column
