@@ -273,8 +273,7 @@
                 });
 
                 settings.columns.filter(".is-short").css({
-                    minHeight: settings.win,
-                    top: "auto"
+                    minHeight: settings.win
                 });
 
                 self.addClass("is-scrolled-past");
