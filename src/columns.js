@@ -274,7 +274,7 @@
 
                 settings.columns.filter(".is-short").css({
                     minHeight: settings.win,
-                    top: auto
+                    top: "auto"
                 });
 
                 self.addClass("is-scrolled-past");
