@@ -9,6 +9,12 @@
     $.fn.columns = function (options) {
 
         var
+        _self = this,
+
+        tests = {
+            scrollY: (window.scrollY >= 0) ? true : false
+        },
+
         // Cache selectors;
         $doc = $(document),
             $body = $('body'),
@@ -169,7 +175,7 @@
         function onResize(e) {
 
 
-            var self = $(e.data[0]),
+            var self = _self,
                 settings = self.data("settings"),
                 i = 0,
                 maxCol = 0,
@@ -226,9 +232,9 @@
 
 
 
-            var self = $(e.data[0]),
+            var self = _self,
                 settings = self.data("settings"),
-                scrollTop = window.scrollY, //$window.scrollTop(),
+                scrollTop = (tests.scrollY) ? window.scrollY : $window.scrollTop(),
                 i = 0;
 
 
