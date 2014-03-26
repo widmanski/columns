@@ -15,6 +15,9 @@
             scrollY: (window.scrollY >= 0) ? true : false
         },
 
+        resizeTimeout = null,
+
+
         // Cache selectors;
         $doc = $(document),
             $body = $('body'),
@@ -28,6 +31,9 @@
                     var settings = this.data("settings");
                     $window.off(settings.namespace);
                     $(this).removeData("settings");
+
+                    clearTimeout(resizeTimeout);
+
                     console.log("destroy called");
 
                 },
@@ -151,8 +157,11 @@
                 .trigger("scroll")
                 .trigger("resize");
 
-            onResize({data: [this]});
-            onScroll({data: [this]});
+            onResize();
+            onScroll();
+
+            // experimental -- do a resize every 2s
+            resizeTimeout = setTimeout(onResize, 2000);
 
 
             return self;
