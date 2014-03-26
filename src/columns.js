@@ -86,6 +86,9 @@
                     proportionalScroll: false,              // makes the columns scroll proportionally using css transforms
                     reverse:        false,                  // makes the shorter columns stick to the top, rather than to the bottom
                     reversedDirection: false                // makes the even columns scroll the other way
+                    // , autoUpdate:   true
+                    // , interval:     null
+
                 },
 
                 cels = self.children(),
@@ -127,10 +130,18 @@
                 settings.columns = self.children();
             }
 
+            // is usless I think
+            // if ( settings.autoUpdate ) {
+            //     settings.interval = setInterval(function(){ 
+            //         updatePosition(self);
+            //     }, 100);
+            // }
+
             self.data("settings", settings);
 
             $window.on("scroll." + settings.namespace, this, onScroll)
                 .on("resize." + settings.namespace, this, onResize)
+                .on("touchmove." + settings.namespace, this, onScroll)
                 .trigger("scroll")
                 .trigger("resize");
 
@@ -141,6 +152,19 @@
             return self;
 
         }
+
+        var lastScroll = 0;
+
+        // function updatePosition(self) {      
+            
+        //     if ( window.scrollY - lastScroll > 10 || window.scrollY + lastScroll < -10) {
+        //         onScroll.call(self, {data: [self]});
+        //         console.log(window.scrollY);
+        //     }
+            
+        //     lastScroll = window.scrollY;
+
+        // }
 
         function onResize(e) {
 
@@ -192,13 +216,19 @@
             onScroll.call(self, {data: [self]});
         }
 
+
+
         function onScroll(e) {
+
+
+
+            // key function
 
 
 
             var self = $(e.data[0]),
                 settings = self.data("settings"),
-                scrollTop = $window.scrollTop(),
+                scrollTop = window.scrollY, //$window.scrollTop(),
                 i = 0;
 
 
@@ -242,6 +272,9 @@
 
             if ( scrollTop < settings.top ) {
 
+
+                // clean up if user is above the target area
+
                 settings.columns
                 .removeClass("is-fixed")
                 .removeClass("is-top-fixed")
@@ -274,7 +307,9 @@
                 for (i = 0; i < settings.cols; i++) {
 
                     // handling for short columns
-                    if ( settings.columns.eq(i).hasClass("is-short") ) {
+                    // if ( settings.columns.eq(i).hasClass("is-short") ) {
+                    // new handling:
+                    if ( settings.columnHeights[i] < settings.win && settings.columnHeights[i] < settings.height ) {
 
                         // scrolled past the column bottom -- let it go
                         if ( scrollTop + settings.columnHeights[i] > settings.top + settings.height ) {
@@ -403,6 +438,8 @@
                     settings.columns.eq(i).removeClass("is-fixed").css({"left": 0});
                 }
             }
+
+
 
         }
 
