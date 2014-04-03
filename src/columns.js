@@ -29,7 +29,7 @@
 
                     // exapand this method to return the html to the original state --> unwrap the columns content, remove inline styles
                     var settings = this.data("settings");
-                    $window.off(settings.namespace);
+                    $window.off("."+settings.namespace);
                     $(this).removeData("settings");
 
                     clearTimeout(resizeTimeout);
