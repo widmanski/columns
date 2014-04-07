@@ -1,6 +1,7 @@
 (function ($) {
 
     "use strict";
+    console.log("v6");
 
     if ($.zepto && !$.fn.removeData) {
         console.log('Error: Zepto is loaded without the data module.');
@@ -18,7 +19,7 @@
         resizeTimeout = null,
 
 
-        // Cache selectors;
+// Cache selectors ###########################################
         $doc = $(document),
             $body = $('body'),
             $window = $(window),
@@ -34,7 +35,7 @@
 
                     clearTimeout(resizeTimeout);
 
-                    console.log("destroy called");
+                    // console.log("destroy called");
 
                 },
 
@@ -90,6 +91,7 @@
                     left:           self.offset().left,     // container offset left
                     win:            $window.height(),
                     winW:           $window.width(),
+                    gutterTop:      0,                      // optional top gutter      
                     cols:           4,                      // number of columns
                     columnHeights:  [],                     // cache column heigths
                     columnTemplate: '<div class="column">{{ content }}</div>',
@@ -170,16 +172,7 @@
 
         var lastScroll = 0;
 
-        // function updatePosition(self) {      
-            
-        //     if ( window.scrollY - lastScroll > 10 || window.scrollY + lastScroll < -10) {
-        //         onScroll.call(self, {data: [self]});
-        //         console.log(window.scrollY);
-        //     }
-            
-        //     lastScroll = window.scrollY;
 
-        // }
 
         function onResize(e) {
 
@@ -235,9 +228,7 @@
 
         function onScroll(e) {
 
-
-
-            // key function
+ // key function ###########################################
 
 
 
@@ -294,7 +285,7 @@
                 .removeClass("is-fixed")
                 .removeClass("is-top-fixed")
                 .removeClass("is-short")
-                .css({"left": 0, "minHeight": 0, "top": 0});
+                .css({"left": 0, "minHeight": 0, "top": settings.gutterTop});
 
                 self.removeClass("is-scrolled-past");
                 return;
@@ -321,13 +312,13 @@
            
                 for (i = 0; i < settings.cols; i++) {
 
-                    // handling for short columns
+ // handling for short columns ###########################################
                     // if ( settings.columns.eq(i).hasClass("is-short") ) {
                     // new handling:
                     if ( settings.columnHeights[i] < settings.win && settings.columnHeights[i] < settings.height ) {
 
                         // scrolled past the column bottom -- let it go
-                        if ( scrollTop + settings.columnHeights[i] > settings.top + settings.height ) {
+                        if ( scrollTop + settings.columnHeights[i] > settings.top + settings.height - settings.gutterTop ) {
                             settings.columns.eq(i).css({
                                 top: "auto",
                                 bottom: 0                            
@@ -337,14 +328,15 @@
                             settings.columns.eq(i).css({
 
                                 // minHeight: settings.win,
-                                top: scrollTop - settings.top //- ( settings.top + settings.height ) 
+                                top: scrollTop - settings.top + settings.gutterTop //- ( settings.top + settings.height ) 
                             
                             });
                         }
                     }
 
-                }
+  // Shorter column ends  ###########################################
 
+                }
                 self.addClass("is-scrolled-past");
                 return;
             }
@@ -352,9 +344,9 @@
                 self.removeClass("is-scrolled-past");
             }
 
+//      top (reverse) lock ###########################################
+//      gutterTop not availa ble here
 
-            // top (reverse) lock
- 
             if ( settings.reverse ) {
 
                 for (i = 0; i < settings.cols; i++) {
@@ -401,7 +393,7 @@
 
 
 
-            // default mode
+ // default mode ###########################################
 
             for (i = 0; i < settings.cols; i++) {
 
@@ -413,7 +405,7 @@
                         "-webkit-transform":    "none",
                         "-moz-transform":       "none",
                         "-ms-transform":        "none",
-                        "top": 0
+                        "top": settings.gutterTop
                     });
                     continue;
                 }
@@ -423,7 +415,7 @@
 
                 if ( scrollTop < settings.top ) continue;
 
-                  // reversed direction scrolling
+// reversed direction scrolling  ###########################################
                 // temp: the 2nd column is reversed [do every even column?]
 
                 if ( settings.reversedDirection && i % 2 !== 0 ) {
@@ -440,13 +432,14 @@
                         "transform":            colTransform,
                         "-webkit-transform":    colTransform,
                         "-moz-transform":       colTransform,
-                        "-ms-transform":       colTransform
+                        "-ms-transform":        colTransform
                     });
 
                     continue;
                 }
 
-                // if (scrollTop + settings.win - settings.top > settings.columnHeights[i]) {
+ // reversed direction ends ###########################################
+
                 if ( scrollTop > settings.top + settings.columnHeights[i] - settings.win ) {
                     settings.columns.eq(i).addClass("is-fixed").css({"top": "auto", "left": settings.left});
                 } else {

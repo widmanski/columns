@@ -34,7 +34,7 @@
   }
 
   .column.is-short {
-    top: 0;
+    top: 100px;
     position: fixed;
   }
 
@@ -179,7 +179,8 @@
               $(this).columns({
                 cols: 3,
                 createColumns: false,
-                autoWidth: false
+                autoWidth: false,
+                gutterTop: 100
             });
             })
             .css("visibility","visible");
