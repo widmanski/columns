@@ -1,7 +1,6 @@
 (function ($) {
 
     "use strict";
-    console.log("v6");
 
     if ($.zepto && !$.fn.removeData) {
         console.log('Error: Zepto is loaded without the data module.');
@@ -207,7 +206,7 @@
                 // newCSS.marginLeft = Math.round(settings.width * 1 * ( (i - settings.cols) / settings.cols + 0.5)) + "px";
 
                 settings.columns.eq(i).css(newCSS);
-                settings.columnHeights[i] = settings.columns.eq(i).height();                
+                settings.columnHeights[i] = settings.columns.eq(i).height() + settings.gutterTop;                
                 maxCol = Math.max(settings.columnHeights[i], maxCol);
 
                 colWidth += settings.columns.eq(i).width();
@@ -216,7 +215,7 @@
             self.height(maxCol);
 
             // move those up in the function
-            settings.height = self.height();
+            settings.height = maxCol;
 
 
             self.data("settings", settings);
@@ -318,7 +317,7 @@
                     if ( settings.columnHeights[i] < settings.win && settings.columnHeights[i] < settings.height ) {
 
                         // scrolled past the column bottom -- let it go
-                        if ( scrollTop + settings.columnHeights[i] > settings.top + settings.height - settings.gutterTop ) {
+                        if ( scrollTop + settings.columnHeights[i] > settings.top + settings.height ) {
                             settings.columns.eq(i).css({
                                 top: "auto",
                                 bottom: 0                            
@@ -400,12 +399,12 @@
                 if ( settings.columnHeights[i] < settings.win && scrollTop > settings.top ) {
                     settings.columns.eq(i).removeClass("is-fixed").addClass("is-short")
                     .css({
-                        "left": settings.left,                        
+                        "left":                 settings.left,                        
                         "transform":            "none",
                         "-webkit-transform":    "none",
                         "-moz-transform":       "none",
                         "-ms-transform":        "none",
-                        "top": settings.gutterTop
+                        "top":                  settings.gutterTop
                     });
                     continue;
                 }
@@ -439,9 +438,16 @@
                 }
 
  // reversed direction ends ###########################################
+ // supports gutterTop
 
-                if ( scrollTop > settings.top + settings.columnHeights[i] - settings.win ) {
-                    settings.columns.eq(i).addClass("is-fixed").css({"top": "auto", "left": settings.left});
+                if ( scrollTop > settings.top + settings.columnHeights[i]  + settings.gutterTop - settings.win ) {
+                    
+                    settings.columns.eq(i).addClass("is-fixed")
+                    .css({
+                        "top": "auto", 
+                        "left": settings.left
+                    });
+
                 } else {
                     settings.columns.eq(i).removeClass("is-fixed").css({"left": 0});
                 }
