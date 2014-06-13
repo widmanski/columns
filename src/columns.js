@@ -5,8 +5,18 @@
     if ($.zepto && !$.fn.removeData) {
         console.log('Error: Zepto is loaded without the data module.');
     }
+    // shim layer with setTimeout fallback
+    window.requestAnimFrame = (function(){
+      return  window.requestAnimationFrame       ||
+              window.webkitRequestAnimationFrame ||
+              window.mozRequestAnimationFrame    ||
+              false;
+    })();
+
+
 
     $.fn.columns = function (options) {
+
 
         var
         _self = this,
@@ -17,9 +27,12 @@
 
         resizeTimeout = null,
 
+        scrollTimeout = null,
+        scrolling = false,
+
 
 // Cache selectors ###########################################
-        $doc = $(document),
+            $doc = $(document),
             $body = $('body'),
             $window = $(window),
 
@@ -29,6 +42,15 @@
 
                     // exapand this method to return the html to the original state --> unwrap the columns content, remove inline styles
                     var settings = this.data("settings");
+                    if ( !settings ) {
+                        return;
+                    }
+
+                    if ( settings.createColumns ) {
+                        this[0].innerHTML = settings.oldHTML;
+                        this[0].setAttribute("style", "");
+                    }
+
                     $window.off("."+settings.namespace);
                     $(this).removeData("settings");
 
@@ -52,7 +74,7 @@
         if (typeof (options) === "string") {
             if (options in publicMethods) {
                 publicMethods[options].call(this, (arguments.length > 1) ? arguments.slice(1) : arguments);
-                return false;
+                return _self;
             }
         }
 
@@ -98,7 +120,8 @@
                     createColumns:  true,                   // automatically create columns?
                     proportionalScroll: false,              // makes the columns scroll proportionally using css transforms
                     reverse:        false,                  // makes the shorter columns stick to the top, rather than to the bottom
-                    reversedDirection: false                // makes the even columns scroll the other way
+                    reversedDirection: false,                // makes the even columns scroll the other way
+                    requestFrame:   true
                     // , autoUpdate:   true
                     // , interval:     null
 
@@ -122,6 +145,8 @@
             if ( settings.createColumns ) {
                 // 1. Group into columns
 
+                settings.oldHTML = self[0].innerHTML;
+
                 for (i = 0; i < celsCount; i++) {
                     columns[currentCol] = (columns[currentCol] || "") + cels[i].outerHTML;
                     currentCol++;
@@ -129,6 +154,7 @@
                 }
 
                 for (i = 0; i < settings.cols; i++) {
+                    columns[i] = columns[i] || "";
                     newHTML += settings.columnTemplate.replace("{{ content }}", columns[i]);
                 }
 
@@ -152,14 +178,32 @@
 
             self.data("settings", settings);
 
-            $window.on("scroll." + settings.namespace, this, onScroll)
+
+            if ( window.requestAnimationFrame && settings.requestFrame ) {
+                animLoop();
+           
+                $window.on("scroll." + settings.namespace, this, onScroll)
                 .on("resize." + settings.namespace, this, onResize)
                 .on("touchmove." + settings.namespace, this, onScroll)
                 .trigger("scroll")
                 .trigger("resize");
 
-            onResize();
-            onScroll();
+                onResize();
+                onScroll();
+            }
+            else {
+
+
+                $window.on("scroll." + settings.namespace, this, render)
+                .on("resize." + settings.namespace, this, onResize)
+                .on("touchmove." + settings.namespace, this, render)
+                .trigger("scroll")
+                .trigger("resize");
+
+                onResize();
+                render();
+            }
+
 
             // experimental -- do a resize every 2s
             resizeTimeout = setTimeout(onResize, 2000);
@@ -171,9 +215,20 @@
 
         var lastScroll = 0;
 
-
+        function animLoop() {
+            requestAnimFrame(animLoop);
+            render();
+                
+        }
 
         function onResize(e) {
+
+
+
+            if ( !_self.length ) {
+                // the element is missing abort;
+                return;
+            }
 
 
             var self = _self,
@@ -224,8 +279,17 @@
         }
 
 
+        function onScroll() {
 
-        function onScroll(e) {
+            scrolling = true;
+            clearTimeout(scrollTimeout);
+            scrollTimeout = setTimeout(function(){
+                scrolling = false;
+            });
+            
+        }
+
+        function render() {
 
  // key function ###########################################
 
@@ -237,14 +301,15 @@
                 i = 0;
 
 
-
             if ( settings.proportionalScroll ) {
+
 
                 // consider: setting this individually for each column
 
                 var columnRatio = 1,
                 colShift = 0,
-                colTransform = "";
+                colTransform = "",
+                colTop = 0;
                 // This uses the prortional scrolling mode -- the shorter columns will be moved up to offset for their smaller height
                 for (i = 0; i < settings.cols; i++) {
                     columnRatio = settings.columnHeights[i] / settings.height;
@@ -253,8 +318,15 @@
                         continue;
                     }
 
-                    colShift = (1-columnRatio) * settings.height * Math.min(1,Math.max(0,(scrollTop - settings.top) / (settings.height - settings.win)));
+                    colShift = (1-columnRatio) * settings.height * Math.min(1, Math.max(0, (scrollTop - settings.top) / (settings.height - settings.win)));
+                    colShift = Math.round(colShift);
+                    
                     colTransform = "translate3d(0px," + colShift + "px, 0px)";
+
+                    if ( (scrollTop - settings.top) / (settings.height - settings.win) > 1 ) {
+                        colTransform = "none";
+                        colTop = colShift;
+                    }
 
                     // toDo: use native JS ? for setting the atributes
                     settings.columns.eq(i).css({
@@ -262,7 +334,8 @@
                         "transform":            colTransform,
                         "-webkit-transform":    colTransform,
                         "-moz-transform":       colTransform,
-                        "-ms-transform":       colTransform
+                        "-ms-transform":        colTransform,
+                        "top":                  colTop
                     });
                 }
                 // in this mode no need for locking columns
@@ -300,12 +373,12 @@
                 .removeClass("is-fixed")
                 .removeClass("is-top-fixed")
                 .css({
-                    "left": 0
+                    "left": 0,
                     //, "top": "auto",                              
-                    // "transform":            "none",
-                    // "-webkit-transform":    "none",
-                    // "-moz-transform":       "none",
-                    // "-ms-transform":        "none"
+                    "transform":            "none",
+                    "-webkit-transform":    "none",
+                    "-moz-transform":       "none",
+                    "-ms-transform":        "none"
                 });
 
            
@@ -344,7 +417,7 @@
             }
 
 //      top (reverse) lock ###########################################
-//      gutterTop not availa ble here
+//      gutterTop not available here
 
             if ( settings.reverse ) {
 
@@ -419,7 +492,9 @@
 
                 if ( settings.reversedDirection && i % 2 !== 0 ) {
 
-                    var colShift =  2 * Math.max( scrollTop - settings.top, 0 ) + settings.win - settings.columnHeights[i] ;
+                    var colShift =  2 * Math.max( scrollTop - settings.top, 0 ) + settings.win - settings.columnHeights[i];
+                    
+                    colShift = Math.round(colShift);
 
                     colShift = Math.min ( colShift, -settings.win + settings.height);
 
