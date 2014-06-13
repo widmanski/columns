@@ -1,6 +1,8 @@
 # columns
 
-> Locking multiple columns while scrolling to always fill the screens
+## Now supports requestAnimationFrame
+
+> Locking multiple columns while scrolling to always fill the screens 
 
 <p align="center"><img style="max-width: 100%" height="400" src="http://dev.widmanski.com/columns/cols-demo.gif?v3" alt="Demo"></p>
 
