@@ -60,6 +60,18 @@
 
                 },
 
+                softDestroy: function() {
+                  var settings = this.data("settings");
+                    if ( !settings ) {
+                        return;
+                    }
+
+                    $window.off("."+settings.namespace);
+                    $(this).removeData("settings");
+
+                    clearTimeout(resizeTimeout);
+                },
+
                 update: function (key, val) {
                     var self = $(this),
                         settings = self.data("settings") || {};
@@ -75,6 +87,14 @@
             if (options in publicMethods) {
                 publicMethods[options].call(this, (arguments.length > 1) ? arguments.slice(1) : arguments);
                 return _self;
+            }
+        }
+
+        function removeStyleAttr(elem, attr) {
+            if (elem.style.removeProperty) {
+                elem.style.removeProperty(attr);
+            } else {
+                elem.style.removeAttribute(attr);
             }
         }
 
@@ -180,8 +200,7 @@
 
 
             if ( window.requestAnimationFrame && settings.requestFrame ) {
-                animLoop();
-           
+                
                 $window.on("scroll." + settings.namespace, this, onScroll)
                 .on("resize." + settings.namespace, this, onResize)
                 .on("touchmove." + settings.namespace, this, onScroll)
@@ -190,6 +209,8 @@
 
                 onResize();
                 onScroll();
+
+                render();
             }
             else {
 
@@ -215,11 +236,7 @@
 
         var lastScroll = 0;
 
-        function animLoop() {
-            requestAnimFrame(animLoop);
-            render();
-                
-        }
+   
 
         function onResize(e) {
 
@@ -241,6 +258,8 @@
                     // todo: base this on the container middle and element offset
                     left: 0
                 };
+
+            if ( !settings ) return;
 
                 
             settings.width = self.width();
@@ -293,12 +312,18 @@
 
  // key function ###########################################
 
+     
 
 
             var self = _self,
                 settings = self.data("settings"),
                 scrollTop = (tests.scrollY) ? window.scrollY : $window.scrollTop(),
                 i = 0;
+
+            if ( !settings ) return;
+            if ( window.requestAnimationFrame && settings.requestFrame ) {            
+                requestAnimFrame(render);    
+            }
 
 
             if ( settings.proportionalScroll ) {
@@ -357,7 +382,15 @@
                 .removeClass("is-fixed")
                 .removeClass("is-top-fixed")
                 .removeClass("is-short")
-                .css({"left": 0, "minHeight": 0, "top": settings.gutterTop});
+                .css({
+                    "left":     0, 
+                    "minHeight": 0, 
+                    "top":      settings.gutterTop
+                });
+
+                settings.columns.each(function(i, col){
+                    removeStyleAttr(col, "position");
+                });
 
                 self.removeClass("is-scrolled-past");
                 return;
@@ -385,22 +418,25 @@
                 for (i = 0; i < settings.cols; i++) {
 
  // handling for short columns ###########################################
-                    // if ( settings.columns.eq(i).hasClass("is-short") ) {
-                    // new handling:
+                    
                     if ( settings.columnHeights[i] < settings.win && settings.columnHeights[i] < settings.height ) {
 
                         // scrolled past the column bottom -- let it go
                         if ( scrollTop + settings.columnHeights[i] > settings.top + settings.height ) {
                             settings.columns.eq(i).css({
                                 top: "auto",
-                                bottom: 0                            
+                                bottom: 0,
+                                position: "absolute"                            
                             });
                         }
                         else {
                             settings.columns.eq(i).css({
 
                                 // minHeight: settings.win,
-                                top: scrollTop - settings.top + settings.gutterTop //- ( settings.top + settings.height ) 
+                                position:   "fixed",
+                                top:        settings.gutterTop,
+                                "left":     settings.left
+                                // top: scrollTop - settings.top + settings.gutterTop //- ( settings.top + settings.height ) 
                             
                             });
                         }
@@ -469,6 +505,8 @@
 
             for (i = 0; i < settings.cols; i++) {
 
+                // Handling for short columns continues
+                // The column is shorter than the screen, lock it while scrolling
                 if ( settings.columnHeights[i] < settings.win && scrollTop > settings.top ) {
                     settings.columns.eq(i).removeClass("is-fixed").addClass("is-short")
                     .css({
@@ -477,12 +515,16 @@
                         "-webkit-transform":    "none",
                         "-moz-transform":       "none",
                         "-ms-transform":        "none",
+                        "position":             "fixed",
                         "top":                  settings.gutterTop
                     });
                     continue;
                 }
                 else {
-                    settings.columns.eq(i).removeClass("is-short").css({"left": 0});
+                    settings.columns.eq(i).removeClass("is-short").css({
+                        "left":     0
+                    });
+                    removeStyleAttr(settings.columns.eq(i).get(0), "position");
                 }
 
                 if ( scrollTop < settings.top ) continue;
