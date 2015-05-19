@@ -1,6 +1,9 @@
 # columns
 
+## Back to working on the plugin! The master branch is now limited to proportioanl scrolling only
+
 ## Now supports requestAnimationFrame
+
 
 > Locking multiple columns while scrolling to always fill the screens 
 
