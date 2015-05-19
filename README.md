@@ -23,14 +23,6 @@
 
 ## demos
 - http://dev.widmanski.com/columns/
-- http://dev.widmanski.com/columns/multiple.html - blog-like layout with multiple instances
-- http://dev.widmanski.com/columns/small.html
-- http://dev.widmanski.com/columns/reversed.html - columns lock to top instead of bottom
-
-
-## proportional scrolling [new]
-
-By setting proportionalScroll to true you activate an alternative mode. The columns are no longer locked - they scroll proportionally to always end at container bottom.
 
 - http://dev.widmanski.com/columns/proportional.html
 - http://dev.widmanski.com/columns/small-proportional.html
@@ -50,8 +42,6 @@ $("#wrapper").columns({
     columnTemplate:     '<div class="column">{{ content }}</div>',
     autoWidth:          true,                   // automatically assign the column width
     createColumns:      true,                   // automatically create columns?
-    proportionalScroll: false,                  // enable proportional scroll mode
-    reverse:            false                   // makes the shorter columns stick to the top of the container
 }
 ```
 

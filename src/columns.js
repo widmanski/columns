@@ -171,9 +171,6 @@
                     columnTemplate:     '<div class="column">{{ content }}</div>',
                     autoWidth:          true, // automatically assign the column width
                     createColumns:      true, // automatically create columns?
-                    proportionalScroll: false, // makes the columns scroll proportionally using css transforms
-                    reverse:            false, // makes the shorter columns stick to the top, rather than to the bottom
-                    reversedDirection:  false, // makes the even columns scroll the other way
                     requestFrame:       true,
                     destroyed:          false
                         // , autoUpdate:   true
@@ -341,7 +338,6 @@
 
             if (!settings) return;
 
-            if (settings.proportionalScroll) {
 
                 // consider: setting this individually for each column
 
@@ -371,9 +367,7 @@
                     transform(settings.columns.eq(i).get(0), colTransform);
 
                 }
-                // in this mode no need for locking columns
-                return;
-            }
+               
 
             // the master branch only handling proportional scrolling
 
