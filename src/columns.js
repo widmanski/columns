@@ -25,10 +25,14 @@
             scrollY: (window.scrollY >= 0) ? true : false
         },
 
+        frameId,
+
         resizeTimeout = null,
 
         scrollTimeout = null,
         scrolling = false,
+
+        settings = {},
 
 
 // Cache selectors ###########################################
@@ -41,7 +45,7 @@
                 destroy: function () {
 
                     // exapand this method to return the html to the original state --> unwrap the columns content, remove inline styles
-                    var settings = this.data("settings");
+                    settings = this.data("settings");
                     if ( !settings ) {
                         return;
                     }
@@ -56,12 +60,18 @@
 
                     clearTimeout(resizeTimeout);
 
+                    if ( "cancelAnimationFrame" in window ) {
+                        window.cancelAnimationFrame(frameId);
+                    }
+
+                    settings.destroyed = true;
+
                     // console.log("destroy called");
 
                 },
 
                 softDestroy: function() {
-                  var settings = this.data("settings");
+                    settings = this.data("settings");
                     if ( !settings ) {
                         return;
                     }
@@ -70,11 +80,17 @@
                     $(this).removeData("settings");
 
                     clearTimeout(resizeTimeout);
+
+                    if ( "cancelAnimationFrame" in window ) {
+                        window.cancelAnimationFrame(frameId);
+                    }
+
                 },
 
                 update: function (key, val) {
-                    var self = $(this),
-                        settings = self.data("settings") || {};
+                    var self = $(this);
+
+                    settings = settings || self.data("settings") || {};
 
                     settings[key] = val;
 
@@ -89,6 +105,31 @@
                 return _self;
             }
         }
+
+        function vAddClass(el, className) {
+            if (el.classList) {
+                el.classList.add(className);
+            } else {
+                el.className += ' ' + className;
+            }
+        }
+
+        function vRemoveClass(el, className) {
+            if (el.classList) {
+                el.classList.remove(className);
+            } else {
+                el.className = el.className.replace(new RegExp('(^|\\b)' + className.split(' ').join('|') + '(\\b|$)', 'gi'), ' ')
+            }
+        }
+
+        function transform(el, transform) {
+          el.style.webkitTransform   = transform;
+          el.style.MozTransform      = transform;
+          el.style.msTransform       = transform;
+          el.style.transform         = transform;
+        }
+
+
 
         function removeStyleAttr(elem, attr) {
             if (elem.style.removeProperty) {
@@ -121,9 +162,10 @@
 
             options = options || {};
 
+            
             var self = this,
 
-                settings = {
+                defaultSettings = {
 
                     namespace:      "columns",
                     height:         self.height(),          // container height
@@ -141,11 +183,14 @@
                     proportionalScroll: false,              // makes the columns scroll proportionally using css transforms
                     reverse:        false,                  // makes the shorter columns stick to the top, rather than to the bottom
                     reversedDirection: false,                // makes the even columns scroll the other way
-                    requestFrame:   true
+                    requestFrame:   true,
+                    destroyed:      false
                     // , autoUpdate:   true
                     // , interval:     null
 
                 },
+
+           
 
                 cels = self.children(),
                 celsCount = cels.length,
@@ -159,7 +204,9 @@
 
             options.filter = options.filter || false;
 
-            $.extend(settings, options);
+            $.extend(settings, defaultSettings, options)
+            // $.extend(settings, defaultSettings);
+
 
 
             if ( settings.createColumns ) {
@@ -189,13 +236,7 @@
                 settings.columns = self.children();
             }
 
-            // is usless I think
-            // if ( settings.autoUpdate ) {
-            //     settings.interval = setInterval(function(){ 
-            //         updatePosition(self);
-            //     }, 100);
-            // }
-
+          
             self.data("settings", settings);
 
 
@@ -211,6 +252,10 @@
                 onScroll();
 
                 render();
+                frameId = requestAnimFrame(loop);
+
+                
+
             }
             else {
 
@@ -236,7 +281,16 @@
 
         var lastScroll = 0;
 
-   
+        function loop() {
+
+            if ( settings.destroyed ) {
+                return;
+            }
+            render();
+            frameId = requestAnimFrame(loop);
+        }
+
+
 
         function onResize(e) {
 
@@ -249,7 +303,6 @@
 
 
             var self = _self,
-                settings = self.data("settings"),
                 i = 0,
                 maxCol = 0,
                 colOffset = 0,
@@ -314,17 +367,12 @@
 
      
 
-
             var self = _self,
-                settings = self.data("settings"),
                 scrollTop = (tests.scrollY) ? window.scrollY : $window.scrollTop(),
                 i = 0;
 
             if ( !settings ) return;
-            if ( window.requestAnimationFrame && settings.requestFrame ) {            
-                requestAnimFrame(render);    
-            }
-
+           
 
             if ( settings.proportionalScroll ) {
 
@@ -353,15 +401,9 @@
                         colTop = colShift;
                     }
 
-                    // toDo: use native JS ? for setting the atributes
-                    settings.columns.eq(i).css({
-                        // marginTop: colShift 
-                        "transform":            colTransform,
-                        "-webkit-transform":    colTransform,
-                        "-moz-transform":       colTransform,
-                        "-ms-transform":        colTransform,
-                        "top":                  colTop
-                    });
+                    settings.columns.eq(i).get(0).style.top = colTop +"px";
+                    transform(settings.columns.eq(i).get(0), colTransform);
+
                 }
                 // in this mode no need for locking columns
                 return; 
@@ -543,13 +585,8 @@
                     colTransform = "translate3d(0px," + colShift + "px, 0px)";
 
                     // toDo: use native JS ? for setting the atributes
-                    settings.columns.eq(i).css({
-                        // marginTop: colShift 
-                        "transform":            colTransform,
-                        "-webkit-transform":    colTransform,
-                        "-moz-transform":       colTransform,
-                        "-ms-transform":        colTransform
-                    });
+                    transform( columns.eq(i).get(0), colTransform );
+
 
                     continue;
                 }
