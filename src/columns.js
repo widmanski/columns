@@ -91,6 +91,10 @@
 
                     self.data("settings", settings);
 
+                },
+
+                resize: function() {
+                    onResize();
                 }
             };
 
@@ -192,6 +196,9 @@
 
             $.extend(settings, defaultSettings, options);
 
+
+            // consider: rather han working on innerHTML, perhaps manipulate DOM elements using jQuery [or native JS] 
+
             if (settings.createColumns) {
                 // 1. Group into columns
 
@@ -246,7 +253,8 @@
             }
 
             // experimental -- do a resize every 2s
-            resizeTimeout = setTimeout(onResize, 2000);
+            // this was a DUMB idea!
+            // resizeTimeout = setTimeout(onResize, 2000);
 
             return self;
 
