@@ -362,7 +362,7 @@
                     }
 
                     colShift = (1 - columnRatio) * settings.height * Math.min(1, Math.max(0, (scrollTop - settings.top) / (settings.height - settings.win)));
-                    colShift = Math.round(colShift);
+                    // colShift = Math.round(colShift); //no need to round!
 
                     colTransform = "translate3d(0px," + colShift + "px, 0px)";
 
