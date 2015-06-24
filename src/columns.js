@@ -31,7 +31,12 @@
 
             settings = {},
 
-            // Cache selectors ###########################################
+            tween,
+            easeY = {
+                sY: window.scrollY || $(window).scrollTop()
+            },
+  
+         // Cache selectors ###########################################
             $doc = $(document),
             $body = $('body'),
             $window = $(window),
@@ -340,8 +345,15 @@
 
             // key function ###########################################
 
+
+            tween = TweenLite.to(easeY, 0.4, {sY: window.scrollY || $(window).scrollTop()});
+  
+
+       
+
             var self = _self,
-                scrollTop = (tests.scrollY) ? window.scrollY : $window.scrollTop(),
+                // scrollTop = (tests.scrollY) ? window.scrollY : $window.scrollTop(),
+                scrollTop = easeY.sY,
                 i = 0;
 
             if (!settings) return;
@@ -362,7 +374,7 @@
                     }
 
                     colShift = (1 - columnRatio) * settings.height * Math.min(1, Math.max(0, (scrollTop - settings.top) / (settings.height - settings.win)));
-                    // colShift = Math.round(colShift); //no need to round!
+                    // colShift = Math.round(colShift);
 
                     colTransform = "translate3d(0px," + colShift + "px, 0px)";
 
